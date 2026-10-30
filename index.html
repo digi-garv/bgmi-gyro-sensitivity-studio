@@ -1,0 +1,2723 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>BGMI High Gyroscope Sensitivity Studio | FPS Recoil Engine</title>
+  <meta name="description" content="Universal BGMI & PUBG Mobile High Gyroscope Sensitivity Generator tailored for 30, 40, 60, 90, and 120 FPS on any display or device with custom horizontal scrolling, recoil simulator, and cloud code generation.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #07090e;
+      --bg-panel: rgba(15, 20, 32, 0.94);
+      --bg-card: rgba(22, 29, 46, 0.8);
+      --bg-card-hover: rgba(30, 40, 64, 0.95);
+      --border-subtle: rgba(255, 184, 0, 0.2);
+      --border-glow: rgba(255, 184, 0, 0.45);
+      
+      --accent-gold: #ffb800;
+      --accent-gold-glow: rgba(255, 184, 0, 0.35);
+      --accent-orange: #ff5722;
+      --accent-cyan: #00f2fe;
+      --accent-cyan-glow: rgba(0, 242, 254, 0.3);
+      --accent-red: #ff2a5f;
+      --accent-green: #00e676;
+      
+      --text-main: #f0f4fc;
+      --text-muted: #8b9bb4;
+      --text-dim: #5a6882;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --font-display: 'Orbitron', 'Rajdhani', -apple-system, sans-serif;
+      --font-tactical: 'Rajdhani', -apple-system, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+      /* Layout Settings */
+      --min-content-width: 1040px;
+      --grid-gap: 16px;
+      --card-padding: 12px 14px;
+      --canvas-height: 230px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: auto; /* Enables horizontal scroll bar */
+      overflow-y: scroll;
+    }
+
+    /* CUSTOM NEON GOLD & ORANGE HORIZONTAL & VERTICAL SCROLLBARS */
+    ::-webkit-scrollbar {
+      width: 9px;
+      height: 10px; /* Explicit horizontal scrollbar */
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #06080d;
+      border: 1px solid rgba(255, 184, 0, 0.12);
+      border-radius: 5px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, #ff5722, #ffb800);
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(255, 184, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(90deg, #ffb800, #00f2fe);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.6);
+    }
+
+    /* Firefox custom scrollbar */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: #ffb800 #06080d;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(255, 184, 0, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 85% 80%, rgba(0, 242, 254, 0.06) 0%, transparent 50%),
+        linear-gradient(rgba(7, 9, 14, 0.94), rgba(7, 9, 14, 0.98)),
+        repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.012) 2px, rgba(255, 255, 255, 0.012) 4px);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: auto; /* Allows smooth horizontal scrolling on any display */
+      line-height: 1.45;
+      width: 100%;
+    }
+
+    /* Top decorative laser line */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent-orange), var(--accent-gold), var(--accent-cyan));
+      z-index: 1000;
+      box-shadow: 0 0 15px var(--accent-gold);
+    }
+
+    /* HORIZONTAL VIEWPORT MODES */
+    /* Mode 1: Panoramic Horizontal Scroll (Default) */
+    body.mode-horizontal-scroll .container {
+      min-width: var(--min-content-width);
+      max-width: 1580px;
+    }
+
+    /* Mode 2: Fluid Reflow for ultra small screens if toggled */
+    body.mode-fluid-reflow .container {
+      min-width: 100%;
+      max-width: 1400px;
+    }
+
+    .container {
+      width: 100%;
+      margin: 0 auto;
+      padding: clamp(10px, 1.8vw, 18px) clamp(10px, 2vw, 20px) 40px;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 16px;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #ff9100, #ff3d00);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 18px rgba(255, 87, 34, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      flex-shrink: 0;
+    }
+
+    .brand-badge svg {
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+
+    .brand-title h1 {
+      font-family: var(--font-display);
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #ffffff 40%, var(--accent-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      line-height: 1.2;
+    }
+
+    .badge-high-gyro {
+      font-size: 0.62rem;
+      letter-spacing: 0.8px;
+      background: rgba(255, 42, 95, 0.2);
+      border: 1px solid var(--accent-red);
+      color: #ff527b;
+      padding: 2px 7px;
+      border-radius: 4px;
+      vertical-align: middle;
+      font-family: var(--font-tactical);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      letter-spacing: 0.2px;
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* VIEWPORT MODE & HORIZONTAL SCROLL CONTROLLER PILL */
+    .view-control-pill {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius-sm);
+      padding: 3px 6px;
+      gap: 4px;
+    }
+
+    .view-toggle-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-tactical);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition);
+      text-transform: uppercase;
+    }
+
+    .view-toggle-btn.active, .view-toggle-btn:hover {
+      background: rgba(255, 184, 0, 0.18);
+      color: var(--accent-gold);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-tactical);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: var(--transition);
+      background: var(--bg-card);
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-gold), #ff8c00);
+      color: #0d0f17;
+      border: none;
+      box-shadow: 0 0 16px var(--accent-gold-glow);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #ffc933, #ffa01a);
+      box-shadow: 0 0 22px rgba(255, 184, 0, 0.6);
+    }
+
+    .btn-cyan {
+      background: rgba(0, 242, 254, 0.12);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+    }
+
+    .btn-cyan:hover {
+      background: rgba(0, 242, 254, 0.22);
+      box-shadow: 0 0 14px var(--accent-cyan-glow);
+    }
+
+    /* DASHBOARD GRID */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: var(--grid-gap);
+      align-items: start;
+    }
+
+    /* LEFT CONTROLS PANEL */
+    .control-panel {
+      background: var(--bg-panel);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      position: sticky;
+      top: 14px;
+      max-height: calc(100vh - 28px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .panel-section-title {
+      font-family: var(--font-tactical);
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .panel-section-title svg {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+    }
+
+    /* FPS SELECTOR */
+    .fps-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 5px;
+    }
+
+    .fps-chip {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 7px 2px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .fps-chip:hover {
+      border-color: rgba(255, 184, 0, 0.4);
+      background: var(--bg-card-hover);
+    }
+
+    .fps-chip.active {
+      background: linear-gradient(180deg, rgba(255, 184, 0, 0.18), rgba(255, 184, 0, 0.05));
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 12px var(--accent-gold-glow);
+    }
+
+    .fps-val {
+      font-family: var(--font-display);
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .fps-chip.active .fps-val {
+      color: var(--accent-gold);
+      text-shadow: 0 0 8px var(--accent-gold-glow);
+    }
+
+    .fps-label {
+      font-size: 0.58rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-family: var(--font-tactical);
+      font-weight: 600;
+    }
+
+    .fps-indicator-bar {
+      height: 3px;
+      background: var(--bg-card);
+      border-radius: 2px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .fps-indicator-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #ff5722, #ffb800, #00f2fe);
+      width: 60%;
+      transition: width 0.3s ease;
+    }
+
+    .fps-metric-pill {
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.3);
+      padding: 4px 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .fps-metric-pill strong { color: var(--accent-cyan); }
+
+    /* PLAYSTYLE & ARCHETYPE */
+    .style-selector {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .style-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 10px;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .style-option:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    .style-option.active {
+      border-color: var(--accent-cyan);
+      background: rgba(0, 242, 254, 0.08);
+      box-shadow: 0 0 12px rgba(0, 242, 254, 0.15);
+    }
+
+    .style-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .style-option.active .style-icon {
+      background: var(--accent-cyan);
+      color: #07090e;
+    }
+
+    .style-text h4 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-tactical);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .style-text p {
+      font-size: 0.66rem;
+      color: var(--text-muted);
+      line-height: 1.25;
+    }
+
+    /* DEVICE & TOGGLES */
+    .select-custom {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-sm);
+      color: #fff;
+      padding: 7px 10px;
+      font-family: var(--font-tactical);
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: var(--bg-card);
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .toggle-info h4 {
+      font-size: 0.78rem;
+      font-family: var(--font-tactical);
+      text-transform: uppercase;
+      color: #fff;
+    }
+
+    .toggle-info p {
+      font-size: 0.64rem;
+      color: var(--text-muted);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 38px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider {
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: rgba(255, 255, 255, 0.15);
+      transition: .25s; border-radius: 20px;
+    }
+    .slider:before {
+      position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px;
+      background-color: white; transition: .25s; border-radius: 50%;
+    }
+    input:checked + .slider { background-color: var(--accent-gold); }
+    input:checked + .slider:before { transform: translateX(18px); background-color: #07090e; }
+
+    /* RIGHT WORKSPACE */
+    .main-workspace {
+      display: flex;
+      flex-direction: column;
+      gap: var(--grid-gap);
+      min-width: 0;
+    }
+
+    /* HERO BANNER */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(255, 184, 0, 0.12), rgba(0, 242, 254, 0.08)), var(--bg-panel);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-left h2 {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      text-transform: uppercase;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-left p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+      max-width: 540px;
+    }
+
+    .hero-stats-grid {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .hero-stat-card {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 5px 10px;
+      min-width: 85px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+    }
+
+    .stat-desc {
+      font-size: 0.6rem;
+      font-family: var(--font-tactical);
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* RECOIL LAB */
+    .lab-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .lab-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .lab-header h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .gun-selector-pills {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .gun-pill {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-family: var(--font-tactical);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: var(--transition);
+    }
+
+    .gun-pill.active {
+      background: var(--accent-orange);
+      color: #ffffff;
+      border-color: var(--accent-orange);
+      box-shadow: 0 0 10px rgba(255, 87, 34, 0.4);
+    }
+
+    .simulator-arena {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(200px, 1fr);
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .canvas-container {
+      position: relative;
+      background: #040609;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      height: var(--canvas-height);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: crosshair;
+    }
+
+    canvas#recoilCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .canvas-overlay-ui {
+      position: absolute;
+      top: 6px; left: 8px; right: 8px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+      font-family: var(--font-tactical);
+      font-size: 0.7rem;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+    }
+
+    .canvas-hud-badge {
+      background: rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2px 7px;
+      border-radius: 4px;
+    }
+
+    .canvas-bottom-cta {
+      position: absolute;
+      bottom: 6px; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 3px 12px;
+      border-radius: 14px;
+      font-size: 0.68rem;
+      font-family: var(--font-tactical);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .lab-side-controls {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 10px;
+    }
+
+    .recoil-meter-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .recoil-meter-label {
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-tactical);
+      text-transform: uppercase;
+    }
+
+    .meter-bar-track {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .meter-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .meter-green { background: linear-gradient(90deg, #00c853, #69f0ae); }
+    .meter-orange { background: linear-gradient(90deg, #ff9100, #ffd740); }
+
+    .gyro-ball-tester {
+      background: #090e17;
+      border: 1px solid rgba(0, 242, 254, 0.2);
+      border-radius: var(--radius-sm);
+      height: 62px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .gyro-reticle-circle {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+    }
+
+    .gyro-ball-dot {
+      width: 10px;
+      height: 10px;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 10px var(--accent-cyan);
+      border-radius: 50%;
+      position: absolute;
+      transform: translate(0, 0);
+      transition: transform 0.06s ease-out;
+    }
+
+    .gyro-ball-hint {
+      position: absolute;
+      bottom: 2px;
+      font-size: 0.6rem;
+      color: var(--text-dim);
+      font-family: var(--font-tactical);
+      text-transform: uppercase;
+    }
+
+    /* HORIZONTAL SCROLLABLE PANORAMIC SCOPE STRIP */
+    .panoramic-strip-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .strip-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .strip-header h3 {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .strip-scroll-hint {
+      font-size: 0.72rem;
+      color: var(--accent-gold);
+      font-family: var(--font-tactical);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 700;
+    }
+
+    .panoramic-scroll-track {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto; /* Dedicated horizontal scrollbar */
+      padding-bottom: 8px;
+      scroll-snap-type: x mandatory;
+    }
+
+    .panoramic-scope-pill {
+      min-width: 140px;
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      scroll-snap-align: start;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .panoramic-scope-pill:hover {
+      border-color: var(--accent-gold);
+      background: var(--bg-card-hover);
+    }
+
+    .pill-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pill-title {
+      font-family: var(--font-tactical);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+    }
+
+    .pill-val {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+    }
+
+    /* SENSITIVITY TABS */
+    .tabs-wrapper {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    }
+
+    .tabs-nav {
+      display: flex;
+      background: rgba(10, 14, 22, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      overflow-x: auto; /* Visible horizontal scroll on mobile / compact */
+      padding: 2px 4px;
+    }
+
+    .tab-btn {
+      padding: 10px 14px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-tactical);
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      position: relative;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .tab-btn:hover { color: #fff; }
+
+    .tab-btn.active {
+      color: var(--accent-gold);
+      background: rgba(255, 184, 0, 0.04);
+    }
+
+    .tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0; height: 3px;
+      background: var(--accent-gold);
+      box-shadow: 0 0 10px var(--accent-gold);
+    }
+
+    .tab-badge {
+      font-size: 0.58rem;
+      padding: 1px 5px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-main);
+    }
+
+    .tab-btn.active .tab-badge {
+      background: var(--accent-gold);
+      color: #07090e;
+    }
+
+    .tab-content {
+      padding: 14px 16px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-intro {
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .tab-intro-title {
+      font-size: 0.88rem;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .tab-intro-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* SLIDERS GRID */
+    .sliders-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 10px;
+    }
+
+    .sens-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: var(--card-padding);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .sens-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 184, 0, 0.25);
+    }
+
+    .sens-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .scope-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scope-icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-gold);
+      flex-shrink: 0;
+    }
+
+    .scope-icon-box svg {
+      width: 18px;
+      height: 18px;
+      fill: currentColor;
+    }
+
+    .scope-titles h4 {
+      font-family: var(--font-tactical);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .scope-titles span {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    .sens-value-badge {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+      display: flex;
+      align-items: baseline;
+    }
+
+    .sens-value-badge span {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-btn {
+      width: 26px;
+      height: 26px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+      flex-shrink: 0;
+    }
+
+    .step-btn:hover {
+      background: var(--accent-gold);
+      color: #07090e;
+      border-color: var(--accent-gold);
+    }
+
+    .range-input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.12);
+      outline: none;
+    }
+
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--accent-gold);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-gold);
+      border: 2px solid #07090e;
+      transition: transform 0.15s ease;
+    }
+
+    .range-input::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+    .range-input::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: var(--accent-gold);
+      cursor: pointer;
+      box-shadow: 0 0 8px var(--accent-gold);
+      border: 2px solid #07090e;
+    }
+
+    .sens-hints {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.62rem;
+      color: var(--text-dim);
+      font-family: var(--font-tactical);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    /* CODE EXPORT */
+    .export-box {
+      background: linear-gradient(180deg, rgba(22, 29, 46, 0.95), rgba(15, 20, 32, 0.95));
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .export-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .export-header h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .share-code-display {
+      background: #06090e;
+      border: 1px dashed rgba(255, 184, 0, 0.4);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .code-string {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--accent-gold);
+      text-shadow: 0 0 10px rgba(255, 184, 0, 0.4);
+    }
+
+    .code-meta {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      font-family: var(--font-tactical);
+      text-transform: uppercase;
+    }
+
+    /* PRO TIPS */
+    .pro-tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 10px;
+    }
+
+    .tip-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tip-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 3px; height: 100%;
+      background: var(--accent-gold);
+    }
+    .tip-card:nth-child(2)::before { background: var(--accent-cyan); }
+    .tip-card:nth-child(3)::before { background: var(--accent-red); }
+
+    .tip-title {
+      font-family: var(--font-tactical);
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tip-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f1523;
+      border: 1px solid var(--accent-gold);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 16px var(--accent-gold-glow);
+      font-family: var(--font-tactical);
+      font-size: 0.88rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transform: translateY(80px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 9999;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .toast-icon { color: var(--accent-green); }
+
+    /* SUMMARY MODAL WITH HORIZONTAL SCROLL TABLE */
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 16px;
+    }
+
+    .modal-backdrop.show { display: flex; }
+
+    .modal-window {
+      background: var(--bg-panel);
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-lg);
+      max-width: 680px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 20px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .modal-table-container {
+      width: 100%;
+      overflow-x: auto; /* Horizontal scrollbar for table */
+      margin-top: 10px;
+    }
+
+    .summary-table {
+      width: 100%;
+      min-width: 480px; /* Ensures horizontal scrollbar activates on narrow screens */
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    .summary-table th {
+      text-align: left;
+      padding: 8px 10px;
+      background: rgba(0, 0, 0, 0.3);
+      color: var(--accent-gold);
+      font-family: var(--font-tactical);
+      text-transform: uppercase;
+      font-weight: 700;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .summary-table td {
+      padding: 8px 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .summary-tag {
+      font-family: var(--font-display);
+      font-weight: 700;
+      color: var(--accent-cyan);
+    }
+
+    footer {
+      margin-top: 36px;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.74rem;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+<body class="mode-horizontal-scroll">
+
+  <div class="container">
+    <!-- HEADER -->
+    <header>
+      <div class="brand-wrap">
+        <div class="brand-badge">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+          </svg>
+        </div>
+        <div class="brand-title">
+          <h1>BGMI SENS-LAB <span class="badge-high-gyro">HIGH GYRO ULTRA</span></h1>
+          <div class="brand-subtitle">Universal High Gyroscope Sensitivity Engine strictly tailored for Mobile FPS</div>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Display / Horizontal Scroll Mode Switcher -->
+        <div class="view-control-pill">
+          <button class="view-toggle-btn active" id="btnModeHorizontal" title="Full Studio with horizontal scrolling on any screen">
+            🖥️ Horizontal Studio
+          </button>
+          <button class="view-toggle-btn" id="btnModeFluid" title="Fluid fit for responsive mobile screens">
+            📱 Fluid Fit
+          </button>
+        </div>
+
+        <button class="btn btn-cyan" id="quickSummaryBtn" title="View formatted list of all sensitivity values">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
+          </svg>
+          Quick List
+        </button>
+        <button class="btn btn-primary" id="copyShareCodeBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+          </svg>
+          Copy Code
+        </button>
+      </div>
+    </header>
+
+    <!-- DASHBOARD GRID -->
+    <div class="dashboard-grid">
+      
+      <!-- LEFT CONFIGURATION COLUMN -->
+      <aside class="control-panel">
+        
+        <!-- FPS SELECTION SECTION -->
+        <section>
+          <div class="panel-section-title">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+            1. Device FPS Selection
+          </div>
+          
+          <div class="fps-selector-grid" id="fpsSelectorGroup">
+            <div class="fps-chip" data-fps="30">
+              <div class="fps-val">30</div>
+              <div class="fps-label">Low/Med</div>
+            </div>
+            <div class="fps-chip" data-fps="40">
+              <div class="fps-val">40</div>
+              <div class="fps-label">High/Ultra</div>
+            </div>
+            <div class="fps-chip active" data-fps="60">
+              <div class="fps-val">60</div>
+              <div class="fps-label">Extreme</div>
+            </div>
+            <div class="fps-chip" data-fps="90">
+              <div class="fps-val">90</div>
+              <div class="fps-label">90 FPS</div>
+            </div>
+            <div class="fps-chip" data-fps="120">
+              <div class="fps-val">120</div>
+              <div class="fps-label">Ultra+</div>
+            </div>
+          </div>
+
+          <div class="fps-indicator-bar">
+            <div class="fps-indicator-progress" id="fpsProgress"></div>
+          </div>
+
+          <div class="fps-metric-pill">
+            <span>Latency: <strong id="latencyMetric">16.6ms</strong></span>
+            <span>Polling: <strong id="pollMetric">120-240Hz</strong></span>
+          </div>
+        </section>
+
+        <!-- PLAYSTYLE ARCHETYPE -->
+        <section>
+          <div class="panel-section-title">
+            <svg viewBox="0 0 24 24"><path d="M19.07 4.93a10 10 0 0 0-14.14 0c-3.9 3.9-3.9 10.23 0 14.14 3.9 3.9 10.23 3.9 14.14 0 3.9-3.9 3.9-10.24 0-14.14zM12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6 6 2.69 6 6-2.69 6-6 6zm-1-9h2v4h-2zm0 6h2v2h-2z"/></svg>
+            2. High Gyro Playstyle
+          </div>
+
+          <div class="style-selector" id="styleSelectorGroup">
+            <div class="style-option active" data-style="assaulter">
+              <div class="style-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
+              </div>
+              <div class="style-text">
+                <h4>Full Tilt Aggressive (400%)</h4>
+                <p>Instant snap-targets, max hipfire tracking</p>
+              </div>
+            </div>
+
+            <div class="style-option" data-style="competitive">
+              <div class="style-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+                </svg>
+              </div>
+              <div class="style-text">
+                <h4>Laser Beam Comp (Balanced)</h4>
+                <p>Tournament sprays, tight 3x/4x control</p>
+              </div>
+            </div>
+
+            <div class="style-option" data-style="hybrid">
+              <div class="style-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93z"/>
+                </svg>
+              </div>
+              <div class="style-text">
+                <h4>Marksman & Spray Hybrid</h4>
+                <p>Snappy close-range with damped 6x/8x DMRs</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- DEVICE SCREEN TYPE -->
+        <section class="filter-group">
+          <div class="panel-section-title">
+            <svg viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+            3. Device Form Factor
+          </div>
+          <select class="select-custom" id="deviceSelect">
+            <option value="phone_standard" selected>Standard Phone (6.3" - 6.7")</option>
+            <option value="phone_compact">Compact Phone (&lt; 6.2") - Higher Pitch</option>
+            <option value="phone_gaming">Gaming Phone (ROG / iQOO / S24U)</option>
+            <option value="tablet">iPad / Tablet - Scaled Gyro Pivot</option>
+          </select>
+        </section>
+
+        <!-- MICRO-JITTER STABILIZER -->
+        <section class="toggle-row">
+          <div class="toggle-info">
+            <h4>Hand Tremor Stabilizer</h4>
+            <p>Dampens jitter on 3x/4x/6x scopes</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="stabilizerToggle" checked>
+            <span class="slider"></span>
+          </label>
+        </section>
+
+        <!-- REVERT & DEFAULT ACTIONS -->
+        <div style="display: flex; gap: 8px;">
+          <button class="btn" id="resetDefaultsBtn" style="flex: 1; padding: 7px 10px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+            Reset
+          </button>
+          <button class="btn btn-cyan" id="exportJsonBtn" style="flex: 1; padding: 7px 10px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            Save JSON
+          </button>
+        </div>
+
+      </aside>
+
+      <!-- RIGHT MAIN WORKSPACE -->
+      <main class="main-workspace">
+        
+        <!-- HERO BANNER -->
+        <div class="hero-banner">
+          <div class="hero-left">
+            <h2>Current Setup: <span id="currentHeroProfile" style="color:var(--accent-gold);">60 FPS Aggressive Gyro</span></h2>
+            <p id="heroDescription">Calibrated for fluid 60 FPS response. High TPP snap speeds with pinpoint 3x spray pull-down counteracting mobile screen friction.</p>
+          </div>
+          <div class="hero-stats-grid">
+            <div class="hero-stat-card">
+              <div class="stat-num" id="statTpp">400%</div>
+              <div class="stat-desc">TPP No Scope</div>
+            </div>
+            <div class="hero-stat-card">
+              <div class="stat-num" id="statRedDot">360%</div>
+              <div class="stat-desc">Red Dot Gyro</div>
+            </div>
+            <div class="hero-stat-card">
+              <div class="stat-num" id="stat3x">235%</div>
+              <div class="stat-desc">3x Spray ADS</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- HORIZONTAL PANORAMIC SCOPE COMPARISON STRIP -->
+        <div class="panoramic-strip-card">
+          <div class="strip-header">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent-gold)"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+              Panoramic Gyro Scope Deck (Scroll Horizontally &rarr;)
+            </h3>
+            <span class="strip-scroll-hint">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+              Horizontal Scrollable
+            </span>
+          </div>
+
+          <div class="panoramic-scroll-track" id="panoramicScopeTrack">
+            <!-- Dynamically populated scope cards with horizontal scrolling -->
+          </div>
+        </div>
+
+        <!-- RECOIL & GYRO INTERACTIVE TESTING LAB -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent-gold)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              Live Recoil Simulation & Gyro Lab
+            </h3>
+            <div class="gun-selector-pills" id="gunSelectorPills">
+              <span class="gun-pill active" data-gun="m416">M416</span>
+              <span class="gun-pill" data-gun="beryl">Beryl M762</span>
+              <span class="gun-pill" data-gun="akm">AKM</span>
+              <span class="gun-pill" data-gun="ump45">UMP45</span>
+            </div>
+          </div>
+
+          <div class="simulator-arena">
+            <!-- CANVAS FOR LIVE FIRING -->
+            <div class="canvas-container" id="canvasContainer">
+              <canvas id="recoilCanvas" width="700" height="230"></canvas>
+              
+              <div class="canvas-overlay-ui">
+                <span class="canvas-hud-badge" id="hudGunName">M416 SPRAY</span>
+                <span class="canvas-hud-badge" id="hudFpsCount">60 FPS</span>
+                <span class="canvas-hud-badge" id="hudControlScore">STABILITY: 94%</span>
+              </div>
+
+              <div class="canvas-bottom-cta">
+                CLICK & HOLD TO FIRE SIMULATION SPRAY
+              </div>
+            </div>
+
+            <!-- SIDEBAR METRICS -->
+            <div class="lab-side-controls">
+              <div class="recoil-meter-item">
+                <div class="recoil-meter-label">
+                  <span>Vertical Drag</span>
+                  <span id="vertRecoilVal">Low (-78%)</span>
+                </div>
+                <div class="meter-bar-track">
+                  <div class="meter-bar-fill meter-green" id="vertRecoilBar" style="width: 82%;"></div>
+                </div>
+              </div>
+
+              <div class="recoil-meter-item">
+                <div class="recoil-meter-label">
+                  <span>Horizontal Jitter</span>
+                  <span id="horizRecoilVal">Minimal (±2px)</span>
+                </div>
+                <div class="meter-bar-track">
+                  <div class="meter-bar-fill meter-green" id="horizRecoilBar" style="width: 90%;"></div>
+                </div>
+              </div>
+
+              <div class="recoil-meter-item">
+                <div class="recoil-meter-label">
+                  <span>Gyro Responsiveness</span>
+                  <span id="gyroResponseVal">Instantaneous</span>
+                </div>
+                <div class="meter-bar-track">
+                  <div class="meter-bar-fill meter-orange" id="gyroResponseBar" style="width: 95%;"></div>
+                </div>
+              </div>
+
+              <!-- GYRO MOTION BALL TESTER -->
+              <div>
+                <div class="recoil-meter-label" style="margin-bottom: 4px;">
+                  <span>Tilt Tracker</span>
+                  <span>Move / Tilt</span>
+                </div>
+                <div class="gyro-ball-tester" id="gyroBallArena">
+                  <div class="gyro-reticle-circle"></div>
+                  <div class="gyro-ball-dot" id="gyroBallDot"></div>
+                  <span class="gyro-ball-hint">Tilt Coordinate Tracking</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- SENSITIVITY CONFIGURATION TABS -->
+        <div class="tabs-wrapper">
+          <nav class="tabs-nav">
+            <button class="tab-btn active" data-tab="tab-gyro-ads">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93z"/></svg>
+              Gyro ADS (Firing Recoil)
+              <span class="tab-badge">Core</span>
+            </button>
+            <button class="tab-btn" data-tab="tab-gyro-aim">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3A8.994 8.994 0 0 0 13 3.06V1h-2v2.06A8.994 8.994 0 0 0 3.06 11H1v2h2.06A8.994 8.994 0 0 0 11 20.94V23h2v-2.06A8.994 8.994 0 0 0 20.94 13H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+              Gyro Aim (Tracking)
+            </button>
+            <button class="tab-btn" data-tab="tab-camera">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9.4 10.5l4.77-8.26C13.47 2.09 12.75 2 12 2c-2.4 0-4.6.85-6.32 2.25l3.66 6.35.06-.1zM21.54 9c-.92-2.92-3.15-5.26-6-6.34L11.88 9h9.66zm.26 1.79l-4.7 8.14c1.72-1.4 2.9-3.4 3.18-5.64l1.52-2.5zM2.2 14.5l4.7-8.14C6.02 7.76 5.5 9.32 5.5 11c0 1.93.7 3.69 1.86 5.07l-5.16-1.57zM12 22c2.4 0 4.6-.85 6.32-2.25l-3.66-6.35-.06.1-4.77 8.26c.7.15 1.42.24 2.17.24zm-7.54-7c.92 2.92 3.15 5.26 6 6.34L14.12 15H4.46z"/></svg>
+              Camera (Touch)
+            </button>
+            <button class="tab-btn" data-tab="tab-ads-touch">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M13 1.07V9h7c.55 0 1 .45 1 1s-.45 1-1 1h-7v7.93c3.05-.46 5.51-2.61 6.5-5.43h2.08c-1.07 3.99-4.52 7.02-8.58 7.43V23h-2v-2.07C6.94 20.52 3.49 17.49 2.42 13.5H4.5c.99 2.82 3.45 4.97 6.5 5.43V11H4c-.55 0-1-.45-1-1s.45-1 1-1h7V1.07C6.94 1.48 3.49 4.51 2.42 8.5H4.5c.99-2.82 3.45-4.97 6.5-5.43V1.07z"/></svg>
+              ADS (Touch)
+            </button>
+            <button class="tab-btn" data-tab="tab-freelook">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+              Free Look
+            </button>
+          </nav>
+
+          <!-- TAB 1: GYROSCOPE ADS SENSITIVITY -->
+          <div class="tab-content active" id="tab-gyro-ads">
+            <div class="tab-intro">
+              <div class="tab-intro-title">Gyroscope ADS Sensitivity (Recoil Control While Firing)</div>
+              <div class="tab-intro-subtitle">These values dictate how strongly your crosshair pulls down when you tilt your device downward while firing.</div>
+            </div>
+            <div class="sliders-grid" id="gridGyroAds"></div>
+          </div>
+
+          <!-- TAB 2: GYROSCOPE CAMERA/TRACKING -->
+          <div class="tab-content" id="tab-gyro-aim">
+            <div class="tab-intro">
+              <div class="tab-intro-title">Gyroscope Sensitivity (Non-Firing Crosshair Placement)</div>
+              <div class="tab-intro-subtitle">Governs headshot tracking, jiggle hipfire aim, and quick target-switching before touching the trigger.</div>
+            </div>
+            <div class="sliders-grid" id="gridGyroAim"></div>
+          </div>
+
+          <!-- TAB 3: CAMERA (TOUCH) -->
+          <div class="tab-content" id="tab-camera">
+            <div class="tab-intro">
+              <div class="tab-intro-title">Screen Swipe Camera Sensitivity</div>
+              <div class="tab-intro-subtitle">Finger swipe camera rotation. Kept balanced so touch swipes complement smooth gyro tilt.</div>
+            </div>
+            <div class="sliders-grid" id="gridCamera"></div>
+          </div>
+
+          <!-- TAB 4: ADS (TOUCH) -->
+          <div class="tab-content" id="tab-ads-touch">
+            <div class="tab-intro">
+              <div class="tab-intro-title">Screen Swipe ADS Sensitivity</div>
+              <div class="tab-intro-subtitle">Thumb drag compensation. High gyro players let the phone tilt do 90%+ work; thumb assists micro-corrections.</div>
+            </div>
+            <div class="sliders-grid" id="gridAdsTouch"></div>
+          </div>
+
+          <!-- TAB 5: FREE LOOK -->
+          <div class="tab-content" id="tab-freelook">
+            <div class="tab-intro">
+              <div class="tab-intro-title">Free Look (Eye Button) Sensitivity</div>
+              <div class="tab-intro-subtitle">Surrounding view for parachuting, driving, and quick 360-degree environmental awareness.</div>
+            </div>
+            <div class="sliders-grid" id="gridFreelook"></div>
+          </div>
+        </div>
+
+        <!-- SHARE CODE DISPLAY & EXPORT -->
+        <div class="export-box">
+          <div class="export-header">
+            <h3>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent-gold)"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/></svg>
+              BGMI Sensitivity Cloud Share Code
+            </h3>
+            <span class="code-meta" id="codeMetaText">Valid for BGMI 3.4+ / Global 3.4+</span>
+          </div>
+
+          <div class="share-code-display">
+            <div>
+              <div class="code-string" id="displayShareCode">7248-8921-4190-6310-852</div>
+              <div style="font-size:0.72rem; color:var(--text-muted); margin-top:2px;">(Simulated code format &bull; Input percentage values into game settings)</div>
+            </div>
+            <button class="btn btn-primary" id="copyCodeDirectBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              Copy Code
+            </button>
+          </div>
+        </div>
+
+        <!-- PRO TIPS / FPS GUIDANCE SECTION -->
+        <div class="pro-tips-grid">
+          <div class="tip-card">
+            <div class="tip-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent-gold)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+              Why FPS Changes Sensitivity
+            </div>
+            <div class="tip-desc">
+              Lower FPS (30 & 40) introduces high screen lag (~33.3ms), causing sluggish gyro drag. Our algorithm increases gyro ADS by <strong>+18% to +25%</strong> for 30/40 FPS to equalize recoil pull-down.
+            </div>
+          </div>
+
+          <div class="tip-card">
+            <div class="tip-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent-cyan)"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+              90 & 120 FPS High-Speed Gyro
+            </div>
+            <div class="tip-desc">
+              At 90 & 120 FPS (8.3ms), gyro polling is hyper-responsive. We automatically apply high-frequency micro-dampening on 3x/4x/6x to eliminate reticle tremble during long-distance sprays.
+            </div>
+          </div>
+
+          <div class="tip-card">
+            <div class="tip-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--accent-red)"><path d="M12 2L1 21h22L12 2zm1 14h-2v-2h2v2zm0-4h-2V8h2v4z"/></svg>
+              Wrist vs Arm Pivot Technique
+            </div>
+            <div class="tip-desc">
+              For 400% full gyro players: use your wrists for 180° snap rotations, and tilt your elbows/forearms down smoothly when pulling down 40-round sprays.
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      BGMI & PUBG Mobile High Gyroscope Sensitivity Calibrator &bull; Offline Ready Standalone App &bull; Universal Display & Custom Horizontal Scroll Engine
+    </footer>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast" id="toast">
+    <svg class="toast-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+    </svg>
+    <span id="toastMsg">Sensitivity Code Copied!</span>
+  </div>
+
+  <!-- QUICK SUMMARY MODAL WITH HORIZONTAL SCROLL TABLE -->
+  <div class="modal-backdrop" id="summaryModal">
+    <div class="modal-window">
+      <button class="modal-close-btn" id="closeModalBtn">&times;</button>
+      <h2 style="font-family:var(--font-display); font-size:1.2rem; color:var(--accent-gold); margin-bottom:4px;">
+        ALL SENSITIVITY VALUES SUMMARY
+      </h2>
+      <p style="font-size:0.78rem; color:var(--text-muted); margin-bottom:10px;">
+        Formatted reference list to input values manually into BGMI settings. Scroll horizontally if needed.
+      </p>
+
+      <div class="modal-table-container" id="modalSummaryContent"></div>
+
+      <div style="margin-top: 18px; display: flex; gap: 10px; justify-content: flex-end;">
+        <button class="btn btn-cyan" id="copyAllSummaryTextBtn">
+          Copy All As Text
+        </button>
+        <button class="btn btn-primary" id="modalCloseActionBtn">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN SCRIPT -->
+  <script>
+    /**
+     * BGMI HIGH GYRO SENSITIVITY CALCULATOR ENGINE
+     * Tailored for high-gyro players across 30, 40, 60, 90, and 120 FPS.
+     * Universal Display & Custom Horizontal Scroll Engine
+     */
+
+    const SCOPE_KEYS = [
+      { id: 'tpp_no_scope', label: '3rd Person No Scope', desc: 'Hipfire snap & tracking' },
+      { id: 'fpp_no_scope', label: '1st Person No Scope', desc: 'FPP jiggle & close combat' },
+      { id: 'red_dot', label: 'Red Dot / Holo / Iron', desc: 'CQC sprays & tracking' },
+      { id: 'scope_2x', label: '2x Scope', desc: 'Submachine & mid assault' },
+      { id: 'scope_3x', label: '3x Scope / Win94', desc: 'M416 spray standard' },
+      { id: 'scope_4x', label: '4x Scope / VSS', desc: 'Precision long spray / DMR' },
+      { id: 'scope_6x', label: '6x Scope', desc: 'Adjusted to 3x or sniper' },
+      { id: 'scope_8x', label: '8x Scope', desc: 'Sniper headshot micro-aim' }
+    ];
+
+    const FREELOOK_KEYS = [
+      { id: 'free_tpp', label: '3rd Person (Character, Vehicle)', desc: 'Surrounding view eye button' },
+      { id: 'free_camera', label: 'Camera (Parachuting)', desc: 'Descent aerial surveillance' },
+      { id: 'free_fpp', label: '1st Person (Character)', desc: 'FPP eye view' }
+    ];
+
+    const FPS_PROFILES = {
+      30: {
+        latency: '33.3ms',
+        poll: '60-120Hz',
+        progress: '25%',
+        gyroMultiplier: 1.12,
+        gyroAdsMultiplier: 1.18,
+        cameraMultiplier: 1.05,
+        recoilVertDrag: 'High (Compensated)',
+        desc: '30 FPS requires heightened gyro ADS (+18%) to overcome touch delay and frame drop during sprays.'
+      },
+      40: {
+        latency: '25.0ms',
+        poll: '90-120Hz',
+        progress: '45%',
+        gyroMultiplier: 1.06,
+        gyroAdsMultiplier: 1.10,
+        cameraMultiplier: 1.02,
+        recoilVertDrag: 'Moderate (+10%)',
+        desc: '40 FPS Ultra graphics profile with elevated gyro compensation for smooth recoil pull-down.'
+      },
+      60: {
+        latency: '16.6ms',
+        poll: '120-240Hz',
+        progress: '65%',
+        gyroMultiplier: 1.0,
+        gyroAdsMultiplier: 1.0,
+        cameraMultiplier: 1.0,
+        recoilVertDrag: 'Standard Ideal',
+        desc: 'The competitive esports gold standard. Balanced, predictable, laser-straight spray pull-down.'
+      },
+      90: {
+        latency: '11.1ms',
+        poll: '240-360Hz',
+        progress: '85%',
+        gyroMultiplier: 0.95,
+        gyroAdsMultiplier: 0.94,
+        cameraMultiplier: 0.96,
+        recoilVertDrag: 'Fluid (-6%)',
+        desc: 'Fluid 90 FPS responsiveness. Scopes 3x, 4x, and 6x receive micro-jitter suppression to prevent tremble.'
+      },
+      120: {
+        latency: '8.3ms',
+        poll: '360-480Hz',
+        progress: '100%',
+        gyroMultiplier: 0.90,
+        gyroAdsMultiplier: 0.88,
+        cameraMultiplier: 0.92,
+        recoilVertDrag: 'Ultra-Crisp (-12%)',
+        desc: 'Ultra-fast 120 FPS flagship response. Enhanced anti-tremor stabilization for laser-straight sprays.'
+      }
+    };
+
+    const BASE_PRESETS = {
+      assaulter: {
+        name: 'Full Tilt Aggressive (400%)',
+        gyroAds: { tpp_no_scope: 400, fpp_no_scope: 400, red_dot: 380, scope_2x: 350, scope_3x: 255, scope_4x: 210, scope_6x: 135, scope_8x: 85 },
+        gyroAim: { tpp_no_scope: 400, fpp_no_scope: 400, red_dot: 380, scope_2x: 360, scope_3x: 260, scope_4x: 215, scope_6x: 140, scope_8x: 90 },
+        camera: { tpp_no_scope: 125, fpp_no_scope: 120, red_dot: 55, scope_2x: 42, scope_3x: 26, scope_4x: 18, scope_6x: 14, scope_8x: 10 },
+        adsTouch: { tpp_no_scope: 120, fpp_no_scope: 115, red_dot: 60, scope_2x: 40, scope_3x: 28, scope_4x: 20, scope_6x: 14, scope_8x: 10 },
+        freelook: { free_tpp: 130, free_camera: 130, free_fpp: 110 }
+      },
+      competitive: {
+        name: 'Laser Beam Comp (Balanced)',
+        gyroAds: { tpp_no_scope: 400, fpp_no_scope: 380, red_dot: 350, scope_2x: 330, scope_3x: 230, scope_4x: 185, scope_6x: 120, scope_8x: 75 },
+        gyroAim: { tpp_no_scope: 390, fpp_no_scope: 380, red_dot: 360, scope_2x: 335, scope_3x: 235, scope_4x: 190, scope_6x: 125, scope_8x: 80 },
+        camera: { tpp_no_scope: 115, fpp_no_scope: 110, red_dot: 50, scope_2x: 36, scope_3x: 24, scope_4x: 16, scope_6x: 12, scope_8x: 9 },
+        adsTouch: { tpp_no_scope: 110, fpp_no_scope: 105, red_dot: 55, scope_2x: 36, scope_3x: 24, scope_4x: 17, scope_6x: 12, scope_8x: 8 },
+        freelook: { free_tpp: 120, free_camera: 120, free_fpp: 100 }
+      },
+      hybrid: {
+        name: 'Marksman & Spray Hybrid',
+        gyroAds: { tpp_no_scope: 380, fpp_no_scope: 370, red_dot: 340, scope_2x: 310, scope_3x: 215, scope_4x: 170, scope_6x: 105, scope_8x: 65 },
+        gyroAim: { tpp_no_scope: 380, fpp_no_scope: 370, red_dot: 340, scope_2x: 310, scope_3x: 220, scope_4x: 175, scope_6x: 110, scope_8x: 70 },
+        camera: { tpp_no_scope: 110, fpp_no_scope: 105, red_dot: 48, scope_2x: 34, scope_3x: 22, scope_4x: 15, scope_6x: 11, scope_8x: 8 },
+        adsTouch: { tpp_no_scope: 105, fpp_no_scope: 100, red_dot: 50, scope_2x: 34, scope_3x: 22, scope_4x: 15, scope_6x: 10, scope_8x: 8 },
+        freelook: { free_tpp: 115, free_camera: 115, free_fpp: 95 }
+      }
+    };
+
+    const AppState = {
+      fps: 60,
+      playstyle: 'assaulter',
+      device: 'phone_standard',
+      stabilizer: true,
+      activeGun: 'm416',
+      sensitivities: {
+        gyroAds: {},
+        gyroAim: {},
+        camera: {},
+        adsTouch: {},
+        freelook: {}
+      }
+    };
+
+    function getScopeSvg(scopeKey) {
+      switch(scopeKey) {
+        case 'tpp_no_scope':
+        case 'fpp_no_scope':
+          return `<svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v4h-2zm0 6h2v2h-2z"/></svg>`;
+        case 'red_dot':
+          return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v4m0 12v4M2 12h4m12 0h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>`;
+        case 'scope_2x':
+          return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="2"/></svg>`;
+        case 'scope_3x':
+          return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2" fill="none"/><line x1="12" y1="4" x2="12" y2="20" stroke="currentColor" stroke-width="1.5"/><line x1="4" y1="12" x2="20" y2="12" stroke="currentColor" stroke-width="1.5"/></svg>`;
+        case 'scope_4x':
+          return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" fill="none"/><path d="M12 3v18M3 12h18M8 12v3M16 12v3" stroke="currentColor" stroke-width="1.5"/></svg>`;
+        case 'scope_6x':
+          return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="5" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 3" fill="none"/><circle cx="12" cy="12" r="1.5"/></svg>`;
+        case 'scope_8x':
+          return `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1" fill="none"/><path d="M12 2v20M2 12h20" stroke="currentColor" stroke-width="1.2"/><circle cx="12" cy="12" r="2"/></svg>`;
+        default:
+          return `<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>`;
+      }
+    }
+
+    function recalculateSensitivities() {
+      const fpsCfg = FPS_PROFILES[AppState.fps];
+      const baseCfg = BASE_PRESETS[AppState.playstyle];
+
+      let devScale = 1.0;
+      if (AppState.device === 'phone_compact') devScale = 1.05;
+      if (AppState.device === 'phone_gaming') devScale = 0.98;
+      if (AppState.device === 'tablet') devScale = 0.88;
+
+      const tremorFactor = AppState.stabilizer ? 0.96 : 1.0;
+
+      // Gyro ADS
+      AppState.sensitivities.gyroAds = {};
+      for (const key in baseCfg.gyroAds) {
+        let val = baseCfg.gyroAds[key];
+        val = Math.round(val * fpsCfg.gyroAdsMultiplier * devScale);
+        if (['scope_3x', 'scope_4x', 'scope_6x', 'scope_8x'].includes(key)) {
+          val = Math.round(val * tremorFactor);
+        }
+        AppState.sensitivities.gyroAds[key] = Math.min(400, Math.max(1, val));
+      }
+
+      // Gyro Aim
+      AppState.sensitivities.gyroAim = {};
+      for (const key in baseCfg.gyroAim) {
+        let val = baseCfg.gyroAim[key];
+        val = Math.round(val * fpsCfg.gyroMultiplier * devScale);
+        if (['scope_3x', 'scope_4x', 'scope_6x', 'scope_8x'].includes(key)) {
+          val = Math.round(val * tremorFactor);
+        }
+        AppState.sensitivities.gyroAim[key] = Math.min(400, Math.max(1, val));
+      }
+
+      // Camera
+      AppState.sensitivities.camera = {};
+      for (const key in baseCfg.camera) {
+        let val = Math.round(baseCfg.camera[key] * fpsCfg.cameraMultiplier * devScale);
+        AppState.sensitivities.camera[key] = Math.min(300, Math.max(1, val));
+      }
+
+      // ADS Touch
+      AppState.sensitivities.adsTouch = {};
+      for (const key in baseCfg.adsTouch) {
+        let val = Math.round(baseCfg.adsTouch[key] * fpsCfg.cameraMultiplier * devScale);
+        AppState.sensitivities.adsTouch[key] = Math.min(300, Math.max(1, val));
+      }
+
+      // Freelook
+      AppState.sensitivities.freelook = {};
+      for (const key in baseCfg.freelook) {
+        let val = Math.round(baseCfg.freelook[key] * devScale);
+        AppState.sensitivities.freelook[key] = Math.min(300, Math.max(1, val));
+      }
+
+      updateUI();
+      renderPanoramicScopeStrip();
+      generateShareCode();
+    }
+
+    // Render Panoramic Horizontal Scope Track
+    function renderPanoramicScopeStrip() {
+      const track = document.getElementById('panoramicScopeTrack');
+      if (!track) return;
+
+      track.innerHTML = '';
+      SCOPE_KEYS.forEach(scope => {
+        const adsVal = AppState.sensitivities.gyroAds[scope.id] || 100;
+        const aimVal = AppState.sensitivities.gyroAim[scope.id] || 100;
+
+        const pill = document.createElement('div');
+        pill.className = 'panoramic-scope-pill';
+        pill.innerHTML = `
+          <div class="pill-header">
+            <span class="pill-title">${scope.label.split(' /')[0]}</span>
+            <div style="width:16px; height:16px; color:var(--accent-gold);">
+              ${getScopeSvg(scope.id)}
+            </div>
+          </div>
+          <div>
+            <div style="font-size:0.62rem; color:var(--text-muted); text-transform:uppercase;">Gyro ADS (Recoil)</div>
+            <div class="pill-val">${adsVal}%</div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:var(--text-dim); border-top:1px solid rgba(255,255,255,0.05); padding-top:4px;">
+            <span>Tracking:</span>
+            <strong style="color:var(--accent-cyan);">${aimVal}%</strong>
+          </div>
+        `;
+        track.appendChild(pill);
+      });
+    }
+
+    // Render Sensitivity Sliders inside Grid Container
+    function renderCategorySliders(containerId, categoryKey, itemsList, maxVal = 400) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      container.innerHTML = '';
+      const categoryData = AppState.sensitivities[categoryKey];
+
+      itemsList.forEach(item => {
+        const currentVal = categoryData[item.id] || 100;
+        const card = document.createElement('div');
+        card.className = 'sens-card';
+        card.innerHTML = `
+          <div class="sens-card-header">
+            <div class="scope-info">
+              <div class="scope-icon-box">
+                ${getScopeSvg(item.id)}
+              </div>
+              <div class="scope-titles">
+                <h4>${item.label}</h4>
+                <span>${item.desc}</span>
+              </div>
+            </div>
+            <div class="sens-value-badge" id="val_${categoryKey}_${item.id}">
+              ${currentVal}<span>%</span>
+            </div>
+          </div>
+          <div class="slider-row">
+            <button class="step-btn" data-action="dec" data-cat="${categoryKey}" data-key="${item.id}">-</button>
+            <input type="range" class="range-input" min="1" max="${maxVal}" value="${currentVal}" 
+                   data-cat="${categoryKey}" data-key="${item.id}" id="range_${categoryKey}_${item.id}">
+            <button class="step-btn" data-action="inc" data-cat="${categoryKey}" data-key="${item.id}">+</button>
+          </div>
+          <div class="sens-hints">
+            <span>Step: 1%</span>
+            <span>Rec: ${AppState.fps} FPS</span>
+            <span>Max: ${maxVal}%</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function refreshSliderValues() {
+      ['gyroAds', 'gyroAim', 'camera', 'adsTouch', 'freelook'].forEach(cat => {
+        const catData = AppState.sensitivities[cat];
+        for (const key in catData) {
+          const valEl = document.getElementById(`val_${cat}_${key}`);
+          const rangeEl = document.getElementById(`range_${cat}_${key}`);
+          if (valEl) valEl.innerHTML = `${catData[key]}<span>%</span>`;
+          if (rangeEl) rangeEl.value = catData[key];
+        }
+      });
+    }
+
+    function updateUI() {
+      const fpsCfg = FPS_PROFILES[AppState.fps];
+      
+      document.getElementById('latencyMetric').textContent = fpsCfg.latency;
+      document.getElementById('pollMetric').textContent = fpsCfg.poll;
+      document.getElementById('fpsProgress').style.width = fpsCfg.progress;
+      document.getElementById('hudFpsCount').textContent = `${AppState.fps} FPS`;
+
+      const styleName = BASE_PRESETS[AppState.playstyle].name.split(' (')[0];
+      document.getElementById('currentHeroProfile').textContent = `${AppState.fps} FPS ${styleName}`;
+      document.getElementById('heroDescription').textContent = fpsCfg.desc;
+
+      document.getElementById('statTpp').textContent = `${AppState.sensitivities.gyroAds.tpp_no_scope}%`;
+      document.getElementById('statRedDot').textContent = `${AppState.sensitivities.gyroAds.red_dot}%`;
+      document.getElementById('stat3x').textContent = `${AppState.sensitivities.gyroAds.scope_3x}%`;
+
+      refreshSliderValues();
+      updateRecoilMetrics();
+    }
+
+    function updateRecoilMetrics() {
+      const fps = AppState.fps;
+      const gAds3x = AppState.sensitivities.gyroAds.scope_3x;
+
+      let vertPercent = 85;
+      let horizPercent = 88;
+
+      if (fps >= 90) {
+        vertPercent = 94;
+        horizPercent = 92;
+        document.getElementById('vertRecoilVal').textContent = 'Micro-Dampened (-84%)';
+        document.getElementById('horizRecoilVal').textContent = 'Laser Stable (±1.8px)';
+      } else if (fps <= 40) {
+        vertPercent = 78;
+        horizPercent = 75;
+        document.getElementById('vertRecoilVal').textContent = 'Heavy Pull (+20% Gyro)';
+        document.getElementById('horizRecoilVal').textContent = 'Dynamic Gyro Comp';
+      } else {
+        vertPercent = 88;
+        horizPercent = 86;
+        document.getElementById('vertRecoilVal').textContent = 'Balanced Comp (-76%)';
+        document.getElementById('horizRecoilVal').textContent = 'Standard Spray (±2.5px)';
+      }
+
+      document.getElementById('vertRecoilBar').style.width = `${vertPercent}%`;
+      document.getElementById('horizRecoilBar').style.width = `${horizPercent}%`;
+      document.getElementById('gyroResponseBar').style.width = `${Math.min(100, Math.round(gAds3x / 400 * 100) + 20)}%`;
+      document.getElementById('hudControlScore').textContent = `STABILITY: ${Math.round((vertPercent + horizPercent) / 2)}%`;
+    }
+
+    function generateShareCode() {
+      const seed = (AppState.fps * 13) + (AppState.sensitivities.gyroAds.scope_3x * 7) + (AppState.sensitivities.gyroAds.red_dot * 3);
+      const part1 = '7248';
+      const part2 = String(8000 + (seed % 1999)).padStart(4, '0');
+      const part3 = String(4000 + ((seed * 3) % 4999)).padStart(4, '0');
+      const part4 = String(6000 + ((seed * 5) % 3999)).padStart(4, '0');
+      const part5 = String(100 + ((seed * 7) % 899)).padStart(3, '0');
+      
+      const fullCode = `${part1}-${part2}-${part3}-${part4}-${part5}`;
+      const codeDisplay = document.getElementById('displayShareCode');
+      if (codeDisplay) codeDisplay.textContent = fullCode;
+      return fullCode;
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const msgEl = document.getElementById('toastMsg');
+      msgEl.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2400);
+    }
+
+    function initializeSliders() {
+      renderCategorySliders('gridGyroAds', 'gyroAds', SCOPE_KEYS, 400);
+      renderCategorySliders('gridGyroAim', 'gyroAim', SCOPE_KEYS, 400);
+      renderCategorySliders('gridCamera', 'camera', SCOPE_KEYS, 300);
+      renderCategorySliders('gridAdsTouch', 'adsTouch', SCOPE_KEYS, 300);
+      renderCategorySliders('gridFreelook', 'freelook', FREELOOK_KEYS, 300);
+    }
+
+    function buildSummaryTable() {
+      let html = `
+        <h4 style="color:var(--accent-gold); font-family:var(--font-tactical); font-size:1rem; margin-top:4px;">
+          GYROSCOPE ADS SENSITIVITY (ACTIVE FIRING)
+        </h4>
+        <table class="summary-table">
+          <thead>
+            <tr><th>Scope</th><th>Value</th><th>Gyro Feel</th></tr>
+          </thead>
+          <tbody>
+      `;
+
+      SCOPE_KEYS.forEach(scope => {
+        const val = AppState.sensitivities.gyroAds[scope.id];
+        html += `
+          <tr>
+            <td><strong>${scope.label}</strong></td>
+            <td><span class="summary-tag">${val}%</span></td>
+            <td style="color:var(--text-muted); font-size:0.75rem;">${val >= 350 ? 'Hyper Fast' : val >= 200 ? 'Laser Spray' : 'Precision Micro'}</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>`;
+
+      html += `
+        <h4 style="color:var(--accent-cyan); font-family:var(--font-tactical); font-size:1rem; margin-top:14px;">
+          GYROSCOPE AIM SENSITIVITY (CAMERA TRACKING)
+        </h4>
+        <table class="summary-table">
+          <thead>
+            <tr><th>Scope</th><th>Value</th><th>Usage</th></tr>
+          </thead>
+          <tbody>
+      `;
+
+      SCOPE_KEYS.forEach(scope => {
+        const val = AppState.sensitivities.gyroAim[scope.id];
+        html += `
+          <tr>
+            <td><strong>${scope.label}</strong></td>
+            <td><span class="summary-tag" style="color:var(--accent-gold);">${val}%</span></td>
+            <td style="color:var(--text-muted); font-size:0.75rem;">Target Tracking & Snap</td>
+          </tr>
+        `;
+      });
+
+      html += `</tbody></table>`;
+
+      html += `
+        <h4 style="color:var(--accent-orange); font-family:var(--font-tactical); font-size:1rem; margin-top:14px;">
+          CAMERA & TOUCH ADS (THUMB CONTROLS)
+        </h4>
+        <table class="summary-table">
+          <thead>
+            <tr><th>Category</th><th>Red Dot</th><th>3x Scope</th><th>4x Scope</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Camera (Touch)</strong></td>
+              <td>${AppState.sensitivities.camera.red_dot}%</td>
+              <td>${AppState.sensitivities.camera.scope_3x}%</td>
+              <td>${AppState.sensitivities.camera.scope_4x}%</td>
+            </tr>
+            <tr>
+              <td><strong>ADS (Touch)</strong></td>
+              <td>${AppState.sensitivities.adsTouch.red_dot}%</td>
+              <td>${AppState.sensitivities.adsTouch.scope_3x}%</td>
+              <td>${AppState.sensitivities.adsTouch.scope_4x}%</td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+
+      document.getElementById('modalSummaryContent').innerHTML = html;
+    }
+
+    function getSensitivitiesPlainText() {
+      let txt = `=== BGMI HIGH GYRO SENSITIVITY (${AppState.fps} FPS - ${AppState.playstyle.toUpperCase()}) ===\n`;
+      txt += `Code: ${document.getElementById('displayShareCode').textContent}\n\n`;
+      
+      txt += `[GYROSCOPE ADS SENSITIVITY (FIRING)]\n`;
+      SCOPE_KEYS.forEach(k => {
+        txt += `${k.label}: ${AppState.sensitivities.gyroAds[k.id]}%\n`;
+      });
+
+      txt += `\n[GYROSCOPE SENSITIVITY (AIMING)]\n`;
+      SCOPE_KEYS.forEach(k => {
+        txt += `${k.label}: ${AppState.sensitivities.gyroAim[k.id]}%\n`;
+      });
+
+      txt += `\n[CAMERA SENSITIVITY (TOUCH)]\n`;
+      SCOPE_KEYS.forEach(k => {
+        txt += `${k.label}: ${AppState.sensitivities.camera[k.id]}%\n`;
+      });
+
+      txt += `\n[ADS SENSITIVITY (TOUCH)]\n`;
+      SCOPE_KEYS.forEach(k => {
+        txt += `${k.label}: ${AppState.sensitivities.adsTouch[k.id]}%\n`;
+      });
+
+      return txt;
+    }
+
+    // ==========================================
+    // RECOIL CANVAS SPRAY SIMULATOR ENGINE
+    // ==========================================
+    const canvas = document.getElementById('recoilCanvas');
+    const ctx = canvas.getContext('2d');
+    let isFiring = false;
+    let bulletIndex = 0;
+    const maxBullets = 30;
+    let bullets = [];
+    let fireInterval = null;
+
+    function resizeCanvas() {
+      const container = canvas.parentElement;
+      if (container && container.clientWidth) {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight || 230;
+      }
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    const GUN_CONFIGS = {
+      m416: { name: 'M416 5.56', recoilRate: 2.8, horizontalSpread: 1.6, firerateMs: 70 },
+      beryl: { name: 'Beryl M762', recoilRate: 5.2, horizontalSpread: 3.2, firerateMs: 65 },
+      akm: { name: 'AKM 7.62', recoilRate: 5.8, horizontalSpread: 2.6, firerateMs: 80 },
+      ump45: { name: 'UMP45 .45', recoilRate: 1.8, horizontalSpread: 1.0, firerateMs: 75 }
+    };
+
+    let crosshair = { x: 350, y: 150 };
+
+    function drawSimulation() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const targetX = canvas.width / 2;
+      const targetY = canvas.height / 2 + 15;
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+      ctx.lineWidth = 1;
+      for (let x = 0; x < canvas.width; x += 35) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += 35) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      ctx.strokeStyle = 'rgba(255, 184, 0, 0.22)';
+      ctx.lineWidth = 1.2;
+      [85, 55, 30, 12].forEach(radius => {
+        ctx.beginPath();
+        ctx.arc(targetX, targetY, radius, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      ctx.fillStyle = 'rgba(255, 42, 95, 0.7)';
+      ctx.beginPath();
+      ctx.arc(targetX, targetY, 4, 0, Math.PI * 2);
+      ctx.fill();
+
+      bullets.forEach((b, idx) => {
+        ctx.beginPath();
+        ctx.arc(b.x, b.y, 3.5, 0, Math.PI * 2);
+        const heat = idx / maxBullets;
+        ctx.fillStyle = `rgba(255, ${Math.floor(210 - heat * 160)}, 0, 0.85)`;
+        ctx.shadowColor = '#ffb800';
+        ctx.shadowBlur = 6;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      if (bullets.length > 1) {
+        ctx.beginPath();
+        ctx.strokeStyle = 'rgba(0, 242, 254, 0.25)';
+        ctx.lineWidth = 1.2;
+        ctx.moveTo(bullets[0].x, bullets[0].y);
+        for (let i = 1; i < bullets.length; i++) {
+          ctx.lineTo(bullets[i].x, bullets[i].y);
+        }
+        ctx.stroke();
+      }
+
+      const chSize = 12;
+      const chGap = isFiring ? 10 : 5;
+      const chX = isFiring ? crosshair.x : targetX;
+      const chY = isFiring ? crosshair.y : targetY;
+
+      ctx.strokeStyle = '#00f2fe';
+      ctx.lineWidth = 1.8;
+      ctx.shadowColor = '#00f2fe';
+      ctx.shadowBlur = 8;
+
+      ctx.beginPath();
+      ctx.moveTo(chX, chY - chGap); ctx.lineTo(chX, chY - chGap - chSize);
+      ctx.moveTo(chX, chY + chGap); ctx.lineTo(chX, chY + chGap + chSize);
+      ctx.moveTo(chX - chGap, chY); ctx.lineTo(chX - chGap - chSize, chY);
+      ctx.moveTo(chX + chGap, chY); ctx.lineTo(chX + chGap + chSize, chY);
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      requestAnimationFrame(drawSimulation);
+    }
+
+    function fireSingleRound() {
+      if (bulletIndex >= maxBullets) {
+        stopFiring();
+        return;
+      }
+
+      const gun = GUN_CONFIGS[AppState.activeGun];
+      const gyroAdsComp = (AppState.sensitivities.gyroAds.scope_3x / 400) * 0.95;
+
+      const rawUpwardKick = gun.recoilRate * (1 + (bulletIndex * 0.07));
+      const compensatedKick = rawUpwardKick * (1 - gyroAdsComp);
+      const horizJitter = (Math.random() - 0.5) * gun.horizontalSpread * (1.1 - (AppState.sensitivities.gyroAds.scope_3x / 800));
+
+      crosshair.y -= (rawUpwardKick - compensatedKick * 1.8);
+      crosshair.x += horizJitter;
+
+      const hitX = crosshair.x + (Math.random() - 0.5) * 4;
+      const hitY = crosshair.y + (Math.random() - 0.5) * 4;
+
+      bullets.push({ x: hitX, y: hitY });
+      bulletIndex++;
+    }
+
+    function startFiring() {
+      if (isFiring) return;
+      isFiring = true;
+      bulletIndex = 0;
+      bullets = [];
+      crosshair.x = canvas.width / 2;
+      crosshair.y = canvas.height / 2 + 15;
+
+      const gun = GUN_CONFIGS[AppState.activeGun];
+      fireSingleRound();
+      fireInterval = setInterval(fireSingleRound, gun.firerateMs);
+    }
+
+    function stopFiring() {
+      isFiring = false;
+      if (fireInterval) {
+        clearInterval(fireInterval);
+        fireInterval = null;
+      }
+      crosshair.x = canvas.width / 2;
+      crosshair.y = canvas.height / 2 + 15;
+    }
+
+    canvas.addEventListener('mousedown', (e) => { e.preventDefault(); startFiring(); });
+    window.addEventListener('mouseup', () => { if (isFiring) stopFiring(); });
+    canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startFiring(); });
+    canvas.addEventListener('touchend', () => { if (isFiring) stopFiring(); });
+
+    const gyroBallDot = document.getElementById('gyroBallDot');
+    function updateGyroBall(xOffset, yOffset) {
+      const maxX = 32;
+      const maxY = 24;
+      const clampedX = Math.max(-maxX, Math.min(maxX, xOffset));
+      const clampedY = Math.max(-maxY, Math.min(maxY, yOffset));
+      gyroBallDot.style.transform = `translate(${clampedX}px, ${clampedY}px)`;
+    }
+
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const relX = ((e.clientX - rect.left) / rect.width - 0.5) * 65;
+      const relY = ((e.clientY - rect.top) / rect.height - 0.5) * 45;
+      updateGyroBall(relX, relY);
+    });
+
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', (event) => {
+        if (event.gamma !== null && event.beta !== null) {
+          updateGyroBall(event.gamma * 1.5, (event.beta - 45) * 1.5);
+        }
+      });
+    }
+
+    // ==========================================
+    // INITIALIZATION & EVENT LISTENERS
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      resizeCanvas();
+      recalculateSensitivities();
+      initializeSliders();
+      requestAnimationFrame(drawSimulation);
+
+      // Horizontal View vs Fluid Fit Toggles
+      const btnModeHorizontal = document.getElementById('btnModeHorizontal');
+      const btnModeFluid = document.getElementById('btnModeFluid');
+
+      btnModeHorizontal.addEventListener('click', () => {
+        document.body.classList.add('mode-horizontal-scroll');
+        document.body.classList.remove('mode-fluid-reflow');
+        btnModeHorizontal.classList.add('active');
+        btnModeFluid.classList.remove('active');
+        resizeCanvas();
+        showToast('Horizontal Studio Mode Active');
+      });
+
+      btnModeFluid.addEventListener('click', () => {
+        document.body.classList.remove('mode-horizontal-scroll');
+        document.body.classList.add('mode-fluid-reflow');
+        btnModeFluid.classList.add('active');
+        btnModeHorizontal.classList.remove('active');
+        resizeCanvas();
+        showToast('Fluid Display Mode Active');
+      });
+
+      // FPS Selector
+      const fpsChips = document.querySelectorAll('.fps-chip');
+      fpsChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          fpsChips.forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          AppState.fps = parseInt(chip.getAttribute('data-fps'), 10);
+          recalculateSensitivities();
+          showToast(`Switched to ${AppState.fps} FPS Profile`);
+        });
+      });
+
+      // Playstyle Options
+      const styleOptions = document.querySelectorAll('.style-option');
+      styleOptions.forEach(opt => {
+        opt.addEventListener('click', () => {
+          styleOptions.forEach(o => o.classList.remove('active'));
+          opt.classList.add('active');
+          AppState.playstyle = opt.getAttribute('data-style');
+          recalculateSensitivities();
+          showToast(`Playstyle: ${BASE_PRESETS[AppState.playstyle].name.split(' (')[0]}`);
+        });
+      });
+
+      // Device Select
+      const devSelect = document.getElementById('deviceSelect');
+      devSelect.addEventListener('change', (e) => {
+        AppState.device = e.target.value;
+        recalculateSensitivities();
+        showToast(`Device layout updated`);
+      });
+
+      // Hand Tremor Stabilizer
+      const stabToggle = document.getElementById('stabilizerToggle');
+      stabToggle.addEventListener('change', (e) => {
+        AppState.stabilizer = e.target.checked;
+        recalculateSensitivities();
+        showToast(AppState.stabilizer ? 'Tremor Stabilizer Activated' : 'Tremor Stabilizer Disabled');
+      });
+
+      // Gun Selection Pills
+      const gunPills = document.querySelectorAll('.gun-pill');
+      gunPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          gunPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          AppState.activeGun = pill.getAttribute('data-gun');
+          document.getElementById('hudGunName').textContent = `${GUN_CONFIGS[AppState.activeGun].name.toUpperCase()}`;
+          showToast(`Loaded: ${GUN_CONFIGS[AppState.activeGun].name}`);
+        });
+      });
+
+      // Tabs Switching
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
+
+          btn.classList.add('active');
+          const targetTabId = btn.getAttribute('data-tab');
+          const targetEl = document.getElementById(targetTabId);
+          if (targetEl) targetEl.classList.add('active');
+        });
+      });
+
+      // Slider range inputs and step buttons
+      document.addEventListener('input', (e) => {
+        if (e.target.classList.contains('range-input')) {
+          const cat = e.target.getAttribute('data-cat');
+          const key = e.target.getAttribute('data-key');
+          const val = parseInt(e.target.value, 10);
+          
+          AppState.sensitivities[cat][key] = val;
+          const valEl = document.getElementById(`val_${cat}_${key}`);
+          if (valEl) valEl.innerHTML = `${val}<span>%</span>`;
+
+          if (cat === 'gyroAds' && key === 'scope_3x') {
+            document.getElementById('stat3x').textContent = `${val}%`;
+            updateRecoilMetrics();
+          }
+          if (cat === 'gyroAds' && key === 'tpp_no_scope') {
+            document.getElementById('statTpp').textContent = `${val}%`;
+          }
+          renderPanoramicScopeStrip();
+          generateShareCode();
+        }
+      });
+
+      document.addEventListener('click', (e) => {
+        const stepBtn = e.target.closest('.step-btn');
+        if (stepBtn) {
+          const action = stepBtn.getAttribute('data-action');
+          const cat = stepBtn.getAttribute('data-cat');
+          const key = stepBtn.getAttribute('data-key');
+          const rangeEl = document.getElementById(`range_${cat}_${key}`);
+          
+          if (rangeEl) {
+            let current = parseInt(rangeEl.value, 10);
+            const delta = action === 'inc' ? 1 : -1;
+            const max = parseInt(rangeEl.max, 10);
+            const min = parseInt(rangeEl.min, 10);
+            const updated = Math.min(max, Math.max(min, current + delta));
+
+            rangeEl.value = updated;
+            AppState.sensitivities[cat][key] = updated;
+
+            const valEl = document.getElementById(`val_${cat}_${key}`);
+            if (valEl) valEl.innerHTML = `${updated}<span>%</span>`;
+
+            if (cat === 'gyroAds' && key === 'scope_3x') {
+              document.getElementById('stat3x').textContent = `${updated}%`;
+              updateRecoilMetrics();
+            }
+            renderPanoramicScopeStrip();
+            generateShareCode();
+          }
+        }
+      });
+
+      // Copy Share Code Button
+      function handleCopyCode() {
+        const code = document.getElementById('displayShareCode').textContent;
+        navigator.clipboard.writeText(code).then(() => {
+          showToast(`Share Code Copied: ${code}`);
+        }).catch(() => {
+          showToast(`Share Code: ${code}`);
+        });
+      }
+
+      document.getElementById('copyShareCodeBtn').addEventListener('click', handleCopyCode);
+      document.getElementById('copyCodeDirectBtn').addEventListener('click', handleCopyCode);
+
+      // Summary Modal
+      const modal = document.getElementById('summaryModal');
+      document.getElementById('quickSummaryBtn').addEventListener('click', () => {
+        buildSummaryTable();
+        modal.classList.add('show');
+      });
+
+      document.getElementById('closeModalBtn').addEventListener('click', () => {
+        modal.classList.remove('show');
+      });
+
+      document.getElementById('modalCloseActionBtn').addEventListener('click', () => {
+        modal.classList.remove('show');
+      });
+
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.classList.remove('show');
+      });
+
+      // Copy Summary As Text
+      document.getElementById('copyAllSummaryTextBtn').addEventListener('click', () => {
+        const fullText = getSensitivitiesPlainText();
+        navigator.clipboard.writeText(fullText).then(() => {
+          showToast('All Sensitivities Copied!');
+          modal.classList.remove('show');
+        });
+      });
+
+      // Export JSON
+      document.getElementById('exportJsonBtn').addEventListener('click', () => {
+        const exportObj = {
+          version: 'BGMI-Gyro-v3.4',
+          timestamp: new Date().toISOString(),
+          fps: AppState.fps,
+          playstyle: AppState.playstyle,
+          device: AppState.device,
+          stabilizer: AppState.stabilizer,
+          shareCode: document.getElementById('displayShareCode').textContent,
+          sensitivities: AppState.sensitivities
+        };
+
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `BGMI_Gyro_${AppState.fps}FPS_${AppState.playstyle}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+
+        showToast('JSON Profile Exported');
+      });
+
+      // Reset Defaults
+      document.getElementById('resetDefaultsBtn').addEventListener('click', () => {
+        AppState.fps = 60;
+        AppState.playstyle = 'assaulter';
+        AppState.device = 'phone_standard';
+        AppState.stabilizer = true;
+        devSelect.value = 'phone_standard';
+        stabToggle.checked = true;
+
+        fpsChips.forEach(c => c.classList.toggle('active', c.getAttribute('data-fps') === '60'));
+        styleOptions.forEach(o => o.classList.toggle('active', o.getAttribute('data-style') === 'assaulter'));
+
+        recalculateSensitivities();
+        showToast('Reset to Default 60 FPS Assaulter');
+      });
+
+    });
+  </script>
+</body>
+</html>
